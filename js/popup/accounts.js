@@ -251,6 +251,10 @@ function addAccount(account) {
     initializeMainMenu();
 }
 
+function obfuscateKey(key) {
+    return key.slice(0, 4) + '*'.repeat(key.length - 8) + key.slice(-4)
+}
+
 // Display Add Copy or delete individual keys
 function manageKeys(name) {
     let index = -1;
@@ -267,24 +271,34 @@ function manageKeys(name) {
         if (keyName.includes("posting")) {
             $(".img_add_key").eq(0).hide();
             $(".remove_key").eq(0).show();
-            if (keyName.includes("Pubkey"))
-                $(".public_key").eq(0).html(account.keys[keyName]);
-            else
-                $(".private_key").eq(0).html(account.keys[keyName]);
+            if (keyName.includes("Pubkey")) {
+              $(".public_key").eq(0).html(account.keys[keyName]);
+              $(".public_key").eq(0).data('key-value', account.keys[keyName]);
+            } else {
+              $(".private_key").eq(0).html(obfuscateKey(account.keys[keyName]));
+              $(".private_key").eq(0).data('key-value', account.keys[keyName]);
+            }
         } else if (keyName.includes("active")) {
             $(".img_add_key").eq(1).hide();
             $(".remove_key").eq(1).show();
-            if (keyName.includes("Pubkey"))
-                $(".public_key").eq(1).html(account.keys[keyName]);
-            else
-                $(".private_key").eq(1).html(account.keys[keyName]);
+            if (keyName.includes("Pubkey")) {
+              $(".public_key").eq(1).html(account.keys[keyName]);
+              $(".public_key").eq(1).data('key-value', account.keys[keyName]);
+
+            } else {
+              $(".private_key").eq(1).html(obfuscateKey(account.keys[keyName]));
+              $(".private_key").eq(1).data('key-value', account.keys[keyName]);
+            }
         } else if (keyName.includes("memo")) {
             $(".remove_key").eq(2).show();
             $(".img_add_key").eq(2).hide();
-            if (keyName.includes("Pubkey"))
-                $(".public_key").eq(2).html(account.keys[keyName]);
-            else
-                $(".private_key").eq(2).html(account.keys[keyName]);
+            if (keyName.includes("Pubkey")) {
+              $(".public_key").eq(2).html(account.keys[keyName]);
+              $(".public_key").eq(2).data('key-value', account.keys[keyName]);
+            } else {
+              $(".private_key").eq(2).html(obfuscateKey(account.keys[keyName]));
+              $(".private_key").eq(2).data('key-value', account.keys[keyName]);
+            }
         }
     }
     if ($(".private_key").eq(0).html() === "") {
@@ -304,7 +318,7 @@ function manageKeys(name) {
         if (timeout != null)
             clearTimeout(timeout);
         $("#copied").hide();
-        $("#fake_input").val($(this).html());
+        $("#fake_input").val($(this).data('key-value'));
         $("#fake_input").select();
         document.execCommand("copy");
         $("#copied").slideDown(600);
